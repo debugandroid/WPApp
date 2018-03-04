@@ -41,7 +41,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_FOOTER = 2;
     private String TAG="LoadImage";
 
-    Context context;
+    private Context context;
 
     Bundle bundle=new Bundle();
     private List<Posts> questionList;
@@ -50,7 +50,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private boolean mWithFooter;
     private View.OnClickListener mOnClickListener;
 
-    public PostAdapter(List<Posts> posts, Context context, boolean withHeader, boolean withFooter) {
+    PostAdapter(List<Posts> posts, Context context, boolean withHeader, boolean withFooter) {
         this.questionList = posts;
         this.context=context;
         this.mWithHeader=withHeader;
@@ -85,7 +85,8 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             VideoViewHolder holder = new VideoViewHolder(itemView);
             itemView.setTag(holder);
-            itemView.setOnClickListener(mOnClickListener);
+
+          //  itemView.setOnClickListener(mOnClickListener);
 
             return holder;
         }
@@ -101,18 +102,9 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
         else {
             Posts post=getItem(position);
-           // name=mediaObject.getBucketName();
-         //   if(name!=null) {
-       //         if (name.length() > 25) {
-       //             ((VideoViewHolder) holder).vName.setText(name.substring(0, 25) + ".." + "(" + mediaObject.getTotalCount() + ")");
-       //         } else {
-    //                ((VideoViewHolder) holder).vName.setText(name + "(" + mediaObject.getTotalCount() + ")");
-   //             }
-   //        }
-          //  ((VideoViewHolder) holder).vImage.setImageResource(R.color.cardview_dark_background);
-        //    ((VideoViewHolder) holder).vFilePath = mediaObject.getData();
-           // ((VideoViewHolder)holder).vDetails.setTag(mediaObject);
+
             ((VideoViewHolder)holder).vTitle.setText(Html.fromHtml(post.getTitle()));
+            ((VideoViewHolder)holder).vTitle.setClickable(true);
             String excerpt=post.getExcerpt();
             if(excerpt!=null){
                 if(excerpt.length()>=254){
@@ -122,8 +114,9 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     ((VideoViewHolder)holder).vExcerpt.setText(Html.fromHtml(post.getExcerpt()+" .."));
                 }
             }
-
+            ((VideoViewHolder)holder).vExcerpt.setClickable(true);
             ((VideoViewHolder) holder).context = context;
+            ((VideoViewHolder) holder).content=post.getContent();
             GlideApp.with(context)
                     .load(post.getPostImg())
                     .thumbnail(0.2f)
@@ -152,11 +145,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                          }
                      })
                     .into(((VideoViewHolder) holder).vImage);
-         //  ((VideoViewHolder) holder).b = bundle;
-          //  ((VideoViewHolder) holder).position = position;
-         //   ((VideoViewHolder) holder).album = name;
 
-           // setScaleAnimation(((VideoViewHolder) holder).vImage);
         }
     }
 
@@ -220,6 +209,7 @@ return itemCount;
         protected ImageView vImage;
         protected TextView vName;
         protected TextView vDetails,vTitle,vExcerpt;
+        String content;
 
         protected  Context context;
 
@@ -232,7 +222,9 @@ return itemCount;
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    Log.d(TAG,"Item Clicked:" +vTitle.getText().toString());
                     Intent fullScreenIntent=new Intent(context.getApplicationContext(), PostFullScreen.class);
+                    fullScreenIntent.putExtra("content",content);
                     context.startActivity(fullScreenIntent);
                 }
             });

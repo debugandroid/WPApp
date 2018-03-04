@@ -92,6 +92,7 @@ public class PostModel extends AndroidViewModel {
                         public void onResponse(JSONArray response) {
                             // display response
                             Log.d(TAG, response.toString() + "Size: "+response.length());
+
                             for(int i=0;i<response.length();i++){
                                 final Posts post=new Posts();
                                 try {
@@ -107,7 +108,7 @@ public class PostModel extends AndroidViewModel {
                                     post.setExcerpt(exerptObj.getString("rendered"));
                                     // Get content
                                     JSONObject contentObj=obj.getJSONObject("content");
-                                    post.setContent(exerptObj.getString("rendered"));
+                                    post.setContent(contentObj.getString("rendered"));
 
 
                                     // getting URL of the Post fetured Image
